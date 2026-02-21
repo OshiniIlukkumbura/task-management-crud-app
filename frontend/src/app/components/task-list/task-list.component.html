@@ -1,0 +1,82 @@
+<mat-card class="task-card">
+  <mat-card-header>
+    <mat-card-title>📋 All Tasks</mat-card-title>
+    <mat-card-subtitle>Manage your tasks below</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div *ngIf="!tasksLoaded" class="spinner-container">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+
+    <ng-container *ngIf="tasksLoaded">
+      <table mat-table [dataSource]="tasks" class="full-width mat-elevation-z4">
+        <ng-container matColumnDef="index">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let task; let i = index">{{ i + 1 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let task">
+            <strong>{{ task.title }}</strong>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let task">{{ task.description || '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let task">
+            <mat-chip [color]="getStatusColor(task.status)" highlighted>
+              {{ task.status }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="priority">
+          <th mat-header-cell *matHeaderCellDef>Priority</th>
+          <td mat-cell *matCellDef="let task">
+            <mat-chip [color]="getPriorityColor(task.priority)" highlighted>
+              {{ task.priority }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let task">
+            <button
+              mat-icon-button
+              color="accent"
+              matTooltip="Edit Task"
+              (click)="editTask(task.id)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              matTooltip="Delete Task"
+              (click)="deleteTask(task.id)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" colspan="6">
+            No tasks found. Click "+ New Task" to get started!
+          </td>
+        </tr>
+      </table>
+    </ng-container>
+  </mat-card-content>
+</mat-card>

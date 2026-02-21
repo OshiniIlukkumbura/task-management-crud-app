@@ -1,0 +1,78 @@
+<div class="form-container">
+  <mat-card class="form-card mat-elevation-z6">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>{{ isEditMode ? 'edit' : 'add_task' }}</mat-icon>
+      <mat-card-title>{{ isEditMode ? 'Edit Task' : 'Create New Task' }}</mat-card-title>
+      <mat-card-subtitle>{{
+        isEditMode ? 'Update the details below' : 'Fill in the details below'
+      }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Spinner: only in edit mode while fetching -->
+      <!--Show spinner if we're in edit mode but haven't loaded the task yet -->
+      <div *ngIf="isEditMode && !taskLoaded" class="spinner-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p class="loading-text">Loading task...</p>
+      </div>
+      <form *ngIf="taskLoaded" (ngSubmit)="onSubmit()" #taskForm="ngForm" class="task-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Task Title</mat-label>
+          <input
+            matInput
+            [(ngModel)]="task.title"
+            name="title"
+            required
+            placeholder="e.g. Fix login bug"
+          />
+          <mat-icon matSuffix>title</mat-icon>
+          <mat-error>Title is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="task.description"
+            name="description"
+            rows="4"
+            placeholder="Describe the task..."
+          ></textarea>
+          <mat-icon matSuffix>notes</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Status</mat-label>
+          <mat-select [(ngModel)]="task.status" name="status">
+            <mat-option *ngFor="let s of statusOptions" [value]="s">{{ s }}</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>flag</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Priority</mat-label>
+          <mat-select [(ngModel)]="task.priority" name="priority">
+            <mat-option *ngFor="let p of priorityOptions" [value]="p">{{ p }}</mat-option>
+          </mat-select>
+          <mat-icon matSuffix>priority_high</mat-icon>
+        </mat-form-field>
+
+        <div class="button-row">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="taskForm.invalid || isSubmitting"
+          >
+            <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+            {{ isEditMode ? 'Update Task' : 'Create Task' }}
+          </button>
+          <button mat-stroked-button type="button" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Cancel
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
